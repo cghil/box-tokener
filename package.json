@@ -1,0 +1,16 @@
+{
+  "name": "practice-cmd",
+  "version": "1.0.0",
+  "description": "An application to make multiple types of access tokens on Box",
+  "main": "index.js",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "crypto": "0.0.3",
+    "jsonwebtoken": "^7.3.0",
+    "minimist": "^1.2.0",
+    "request": "^2.79.0"
+  },
+  "devDependencies": {},
+  "author": "Corey Ghilarducci",
+  "license": "ISC"
+}
