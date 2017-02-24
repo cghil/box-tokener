@@ -8,19 +8,19 @@ var jwt = require('jsonwebtoken'),
     argv = require('minimist')(process.argv.slice(2));
 
 function PayLoadInputs(client_id, client_secret, ent_or_user_id, box_sub_type) {
-	// generates random string for JTI
-	function generateJTI() {
-	    return crypto.randomBytes(20).toString('hex');
-	};
+    // generates random string for JTI
+    function generateJTI() {
+        return crypto.randomBytes(20).toString('hex');
+    };
 
-	// generates the time for when the JWT will expire (59 seconds after created)
-	function generateExp() {
-	    var currentDate = new Date();
-	    currentDate = currentDate.getTime();
-	    var expiringTime = Math.floor((currentDate + 59000) / 1000);
-	    expiringTime = parseInt(expiringTime);
-	    return expiringTime
-	};
+    // generates the time for when the JWT will expire (59 seconds after created)
+    function generateExp() {
+        var currentDate = new Date();
+        currentDate = currentDate.getTime();
+        var expiringTime = Math.floor((currentDate + 59000) / 1000);
+        expiringTime = parseInt(expiringTime);
+        return expiringTime
+    };
 
     this.client_id = client_id;
     this.ent_or_user_id = ent_or_user_id;
@@ -37,8 +37,6 @@ function KeyInputs(filePath, keyId, passphrase) {
     this.passphrase = passphrase;
 };
 
-
-
 var app = app || {};
 
 app.tokenMaker = (function() {
@@ -52,10 +50,7 @@ app.tokenMaker = (function() {
             jti: payload.jti,
             exp: payload.exp
         }, { key: keyInfo.privateKey, passphrase: keyInfo.passphrase }, { algorithm: 'RS256', noTimestamp: true, header: { kid: keyInfo.publicKeyId } });
-        console.log(signed_token);
-        var decoded = jwt.decode(signed_token);
-        console.log(decoded);
-        return signed_token;
+        return { signed_token: signed_token, client_id: payload.client_id, client_secret: payload.client_secret };
     };
 
     function requestForAccessToken(signed_JWT, client_secret, client_id) {
@@ -75,19 +70,43 @@ app.tokenMaker = (function() {
 
         request(options, responseHandler);
 
+        printJWT(signed_JWT);
+
         function responseHandler(error, response, body) {
             if (error) throw new Error(error);
+            var body = JSON.parse(body);
+            printBody(body);
         };
     };
 
+    function printBody(body) {
+        console.log('JSON response from server'.green);
+        console.log(body);
+        console.log('--------------------------------');
+        console.log(' ');
+        console.log(colors.red('Access Token: %s'), body.access_token);
+        console.log(' ');
+    };
+
+    function printJWT(token) {
+    	console.log(' ');
+        console.log('Encoded JWT'.blue);
+        console.log(token);
+        console.log('--------------------------------');
+        console.log(' ');
+    };
+
     return {
-        generateJWT: function(payload, keyInfo) {
-        	generateJWT(payload, keyInfo);
+        jwtGenerator: function(payload, keyInfo) {
+            return generateJWT(payload, keyInfo);
+        },
+        accessTokenCreator: function(inputs) {
+            requestForAccessToken(inputs.signed_token, inputs.client_secret, inputs.client_id);
         }
-    }
+    };
 })();
 
-app.consoleParser = (function() {
+app.consoleController = (function() {
     var tokenIdentifier = function() {
         if (argv.user_id != undefined || argv.U != undefined) {
             var user_id = argv.user_id || argv.U;
@@ -109,7 +128,9 @@ app.consoleParser = (function() {
         console.log('-E or --enterprise_id'.blue + ' : ID of the enterprise');
         console.log('-U or --user_id'.blue + ' : ID of the App User');
         console.log('-P or --passphrase'.blue + ' : secret for the JWT signing. Must match PEM');
-        console.log('-S or --client_secret'.blue + ': found in the developer console');
+        console.log('-S or --client_secret'.blue + ': client secret that pairs with client id');
+        console.log('-Q or --public_key_id'.blue + ': the public key id found in developer console');
+        console.log('-K or --path_private_key'.blue + ': file path to private key');
         console.log(' ');
     };
 
@@ -132,10 +153,11 @@ app.consoleParser = (function() {
         } else if (client_id && client_secret && passphrase && privateKey && publicKeyId) {
             var typeOfToken = tokenIdentifier();
             var box_sub_type = typeOfToken.box_sub_type;
-            var ent_or_user_id = typeOfToken.id;
+            var ent_or_user_id = typeOfToken.id.toString();
             var payloadInputs = new PayLoadInputs(client_id, client_secret, ent_or_user_id, box_sub_type);
             var keyInputs = new KeyInputs(privateKey, publicKeyId, passphrase);
-            callback(payloadInputs, keyInputs);
+            jwt = callback(payloadInputs, keyInputs);
+            return jwt
         } else {
             errorArgHandler();
         }
@@ -146,7 +168,13 @@ app.consoleParser = (function() {
             return argumentParser(callback);
         }
     };
-
 })();
 
-app.consoleParser.start(app.tokenMaker.generateJWT);
+app.start = function() {
+    var inputs = app.consoleController.start(app.tokenMaker.jwtGenerator);
+    if (inputs) {
+        app.tokenMaker.accessTokenCreator(inputs);
+    }
+};
+
+app.start();
