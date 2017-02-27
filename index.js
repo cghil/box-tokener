@@ -70,30 +70,13 @@ app.tokenMaker = (function() {
 
         request(options, responseHandler);
 
-        printJWT(signed_JWT);
+        app.consoleController.printJWT(signed_JWT);
 
         function responseHandler(error, response, body) {
             if (error) throw new Error(error);
             var body = JSON.parse(body);
-            printBody(body);
+            app.consoleController.printResponseBoby(body);
         };
-    };
-
-    function printBody(body) {
-        console.log('JSON response from server'.green);
-        console.log(body);
-        console.log('--------------------------------');
-        console.log(' ');
-        console.log(colors.red('Access Token: %s'), body.access_token);
-        console.log(' ');
-    };
-
-    function printJWT(token) {
-    	console.log(' ');
-        console.log('Encoded JWT'.blue);
-        console.log(token);
-        console.log('--------------------------------');
-        console.log(' ');
     };
 
     return {
@@ -117,6 +100,24 @@ app.consoleController = (function() {
             var box_sub_type = 'enterprise';
             return { id: enterprise_id, box_sub_type: box_sub_type };
         }
+    };
+
+
+    function bodyResponsePrinter(body) {
+        console.log('JSON response from server'.green);
+        console.log(body);
+        console.log('--------------------------------');
+        console.log(' ');
+        console.log(colors.red('Access Token: %s'), body.access_token);
+        console.log(' ');
+    };
+
+    function JWTPrinter(token) {
+        console.log(' ');
+        console.log('Encoded JWT'.blue);
+        console.log(token);
+        console.log('--------------------------------');
+        console.log(' ');
     };
 
     var help = function() {
@@ -166,6 +167,14 @@ app.consoleController = (function() {
     return {
         start: function(callback) {
             return argumentParser(callback);
+        },
+
+        printResponseBoby: function(body){
+        	return bodyResponsePrinter(body);
+        },
+
+        printJWT: function(token){
+        	return JWTPrinter(token);
         }
     };
 })();
