@@ -1,11 +1,17 @@
 // requiring dependencies
 
 var jwt = require('jsonwebtoken'),
+// signing and coding JWTs
     fs = require('fs'),
+// node module that provides file and directory access
     request = require('request'),
+// client for HTTP requests
     crypto = require('crypto'),
+// node module that provides cryptographic functionality
     colors = require('colors'),
+// allows for methods to color in the console
     argv = require('minimist')(process.argv.slice(2));
+// allows for inputs from user
 
 function PayLoadInputs(client_id, client_secret, ent_or_user_id, box_sub_type) {
     // generates random string for JTI
