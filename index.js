@@ -46,7 +46,7 @@ function KeyInputs(filePath, keyId, passphrase) {
 var app = app || {};
 
 app.tokenMaker = (function() {
-
+	// creating the JWT
     function generateJWT(payload, keyInfo) {
         var signed_token = jwt.sign({
             iss: payload.client_id,
@@ -58,7 +58,7 @@ app.tokenMaker = (function() {
         }, { key: keyInfo.privateKey, passphrase: keyInfo.passphrase }, { algorithm: 'RS256', noTimestamp: true, header: { kid: keyInfo.publicKeyId } });
         return { signed_token: signed_token, client_id: payload.client_id, client_secret: payload.client_secret };
     };
-
+    // making a request to Box services to get an access token with the JWT
     function requestForAccessToken(signed_JWT, client_secret, client_id) {
         var options = {
             method: "POST",
