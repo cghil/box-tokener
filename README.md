@@ -16,4 +16,5 @@ You will needed to have set up and application on Box. Please create your applic
  node index.js -C CLIENT_ID -E ENTERPRISE_ID -K PATH_TO_PRIVATE_KEY/PRIVATE_KEY_FILE_NAME.pem -P KEY_SECRET -S CLIENT_SECRET -Q PUBLIC_KEY_ID
  ```
 
-[Box Developer Blog](https://docs.box.com/docs/community-supported-projects)
+###### Find more community projects on Box
+* [Box Developer Blog](https://docs.box.com/docs/community-supported-projects)
