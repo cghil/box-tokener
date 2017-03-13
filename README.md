@@ -4,7 +4,7 @@ The tool can generate two different types of access tokens:
 2. access tokens scoped to other users (managed user or app user).
 
 # How to use this tool?
-You will needed to have set up and application on Box. Please create your application [here](developer.box.com). Make sure to scope your application to use server side authentication. If you scope your application to only app users, your application will only be able to create platform only users. If you scope your application to use all users, you will be able to authenticate as managed and app users. All server side authenticated applications will have access to the service account.
+You will needed to have set up and application on Box. Please create your application [here](developer.box.com). Make sure to scope your application to use server side authentication. If you scope your application to only app users, your application will only be able to create platform only users. If you scope your application to use all users, you will be able to authenticate as managed and app users. All server side authenticated applications will have access to the service account. Link to [blog](https://docs.box.com/blog/box-tokener-a-nodejs-command-line-tool-to-generate-box-api-tokens).
 
 ##Generating an user access token
 ```
@@ -15,3 +15,5 @@ You will needed to have set up and application on Box. Please create your applic
  ```
  node index.js -C CLIENT_ID -E ENTERPRISE_ID -K PATH_TO_PRIVATE_KEY/PRIVATE_KEY_FILE_NAME.pem -P KEY_SECRET -S CLIENT_SECRET -Q PUBLIC_KEY_ID
  ```
+
+[Box Developer Blog](https://docs.box.com/docs/community-supported-projects)
