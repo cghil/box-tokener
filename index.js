@@ -1,41 +1,18 @@
 // requiring dependencies
 
-var jwt = require('jsonwebtoken'),
 // signing and coding JWTs
-    fs = require('fs'),
+var jwt = require('jsonwebtoken'),
 // node module that provides file and directory access
-    request = require('request'),
+    fs = require('fs'),
 // client for HTTP requests
-    crypto = require('crypto'),
-// node module that provides cryptographic functionality
-    colors = require('colors'),
+    request = require('request'),
 // allows for methods to color in the console
-    argv = require('minimist')(process.argv.slice(2));
+    colors = require('colors'),
+// getting models for tool
+    PayLoadInputs = require('./models/payload'),
+    KeyInputs = require('./models/keyinputs'),
 // allows for inputs from user
-
-function PayLoadInputs(client_id, client_secret, ent_or_user_id, box_sub_type) {
-    // generates random string for JTI
-    function generateJTI() {
-        return crypto.randomBytes(20).toString('hex');
-    };
-
-    // generates the time for when the JWT will expire (59 seconds after created)
-    function generateExp() {
-        var currentDate = new Date();
-        currentDate = currentDate.getTime();
-        var expiringTime = Math.floor((currentDate + 59000) / 1000);
-        expiringTime = parseInt(expiringTime);
-        return expiringTime
-    };
-
-    this.client_id = client_id;
-    this.ent_or_user_id = ent_or_user_id;
-    this.box_sub_type = box_sub_type;
-    this.exp = generateExp();
-    this.jti = generateJTI();
-    this.aud = "https://api.box.com/oauth2/token"
-    this.client_secret = client_secret;
-};
+    argv = require('minimist')(process.argv.slice(2));
 
 function KeyInputs(filePath, keyId, passphrase) {
     this.privateKey = fs.readFileSync(filePath);
