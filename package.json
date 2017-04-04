@@ -1,8 +1,9 @@
 {
   "name": "practice-cmd",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An application to make multiple types of access tokens on Box",
   "main": "index.js",
+  "engine": {"node": "7.5.0"},
   "dependencies": {
     "colors": "^1.1.2",
     "crypto": "0.0.3",
