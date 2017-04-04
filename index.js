@@ -2,8 +2,6 @@
 
 // signing and coding JWTs
 var jwt = require('jsonwebtoken'),
-// node module that provides file and directory access
-    fs = require('fs'),
 // client for HTTP requests
     request = require('request'),
 // allows for methods to color in the console
@@ -13,12 +11,6 @@ var jwt = require('jsonwebtoken'),
     KeyInputs = require('./models/keyinputs'),
 // allows for inputs from user
     argv = require('minimist')(process.argv.slice(2));
-
-function KeyInputs(filePath, keyId, passphrase) {
-    this.privateKey = fs.readFileSync(filePath);
-    this.publicKeyId = keyId;
-    this.passphrase = passphrase;
-};
 
 var app = app || {};
 
