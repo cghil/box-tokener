@@ -77,6 +77,9 @@ app.consoleController = (function() {
         }
     };
 
+    var fileReader = function(){
+    };
+
 
     function bodyResponsePrinter(body) {
         console.log('JSON response from server'.green);
